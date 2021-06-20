@@ -4,15 +4,15 @@ import "testing"
 
 var (
 	hash64ToDataMap = map[string]string{
-		"000103000401070008010b000c010f00100113001401170018011b001c011f00": "",
-		"616062616560666169606a616d606e61716072617560766179607a617d607e61": "a",
-		"616063626560666169606a616d606e61716072617560766179607a617d607e61": "aaaaa",
-		"476963707471777078717b707c717f70607163706471677068716b706c716f70": "Ghas",
-		"47696370244d677460294c7e626e7a667f7f6d7e6a7f697e667f657e627f617e": "Ghas Hash Function",
-		"59697b3125082a386b67442a7a6e6d297f7f20367f356527732a393264226d7e": `Ghas Hash Function is just a play attempt at
+		"407f417c407b41784077417440734170406f416c406b41684067416440634160": "",
+		"605e615d605a61596056615560526151604e614d604a61496046614560426141": "a",
+		"64656667605e615d6052615160566155604a6149604e614d6042614160466145": "aaaaa",
+		"436d67744c734d704c7f4d7c4c7b4d784c674d644c634d604c6f4d6c4c6b4d68": "Ghas",
+		"557b7162365f7566723b5e6c707c68746d6d516e5069516a5065516650615162": "Ghas Hash Function",
+		"fcccde9480ad8f9dcec2e18fdfcbc88cdada8593da90c082d68f9c97c187c8db": `Ghas Hash Function is just a play attempt at
 	a b c d e f g h i j k l m n o p q r s t u v w x y z
 	data hashing uniformly at that same length for all length of input`,
-		"6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23": `==========================================================
+		"e6badbe2d6c3d593d3afb0efd9ed75e57d9845f16b9923e12df00483008571bf": `==========================================================
 What is Lorem Ipsum?
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 

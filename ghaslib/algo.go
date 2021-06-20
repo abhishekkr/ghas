@@ -5,6 +5,11 @@ import (
 	"encoding/hex"
 )
 
+/*
+No DRY applied on CustomEval & Sum; as extracting common flow here is considerably increasing exec time.
+Since that is for easy maintainability and not attributing to quality of hash generated, we'll do without it.
+*/
+
 type ghas struct {
 	data          []byte
 	size          int
@@ -33,6 +38,11 @@ func (g *ghas) Size() int {
 
 func (g *ghas) Sum(dat []byte) {
 	g.data = make([]byte, g.size)
+	var defVal byte = byte(len(dat))
+	for i := 0; i < g.size; i++ {
+		g.data[i] = defVal
+	}
+
 	idx := 0
 	for _, d := range dat {
 		if idx >= g.size {
@@ -46,7 +56,7 @@ func (g *ghas) Sum(dat []byte) {
 		prev = g.data[idx-1]
 	}
 	for idx < g.size {
-		g.data[idx] = hashByte(g.data[idx], prev, idx)
+		g.data[idx] = hashByte(g.data[idx], prev, g.size-idx)
 		prev = g.data[idx]
 		idx++
 	}
@@ -62,6 +72,11 @@ func (g *ghas) CustomEval(dat []byte,
 	go hashIt(g, dat)
 
 	g.data = make([]byte, g.size)
+	var defVal byte = byte(len(dat))
+	for i := 0; i < g.size; i++ {
+		g.data[i] = defVal
+	}
+
 	idx := 0
 	for {
 		if idx >= g.size {
@@ -79,7 +94,7 @@ func (g *ghas) CustomEval(dat []byte,
 		prev = g.data[idx-1]
 	}
 	for idx < g.size {
-		g.data[idx] = hashFn(g.data[idx], prev, idx)
+		g.data[idx] = hashFn(g.data[idx], prev, g.size-idx)
 		prev = g.data[idx]
 		idx++
 	}
@@ -99,6 +114,6 @@ func sendData(g *ghas, dat []byte) {
 	close(g.C)
 }
 
-func hashByte(prevByte byte, currentByte byte, currentIdx int) byte {
-	return prevByte ^ (currentByte ^ byte(currentIdx))
+func hashByte(salt byte, currentByte byte, currentIdx int) byte {
+	return salt ^ (currentByte ^ byte(currentIdx))
 }

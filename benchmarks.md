@@ -53,70 +53,70 @@ Showing top 5 nodes out of 107
 * for a 43 char containing regular file `go.mod`; slower than rest
 
 ```
-# go run ghas.go -f go.mod -s 256
+# ./ghas -f go.mod -s 256
 file length:  43
 
--GHAS-> 6.716µs
+-GHAS-> 4.701µs  | for hash with 256 bytes
 
--MD5-> 589ns
+-MD5-> 613ns  | for hash with 32 bytes
 
--SHA256-> 1.45µs
+-SHA256-> 1.539µs  | for hash with 64 bytes
 
--SHA512-> 1.491µs
+-SHA512-> 1.263µs  | for hash with 128 bytes
 
--HMAC512-> 5.416µs
+-HMAC512-> 2.841µs  | for hash with 88 bytes
 ```
 
-* for a 28KB pprof dump
+* for a 24KB pprof dump
 
 ```
-# go run ghas.go -f cpu.out -s 256
+# ./ghas -f cpu.out -s 256
 file length:  24876
 
--GHAS-> 31.288µs
+-GHAS-> 32.436µs  | for hash with 256 bytes
 
--MD5-> 35.808µs
+-MD5-> 35.367µs  | for hash with 32 bytes
 
--SHA256-> 67.566µs
+-SHA256-> 62.415µs  | for hash with 64 bytes
 
--SHA512-> 52.136µs
+-SHA512-> 42.845µs  | for hash with 128 bytes
 
--HMAC512-> 50.429µs
+-HMAC512-> 43.933µs  | for hash with 88 bytes
 ```
 
 
 * for a 2.1MB PDF file
 
 ```
-# go run ghas.go -f 1706.pdf -s 256
+# ./ghas -f 1706.pdf -s 256 -c
 file length:  2128686
 
--GHAS-> 1.996587ms
+-GHAS-> 3.241141ms  | for hash with 256 bytes
 
--MD5-> 3.004071ms
+-MD5-> 3.996002ms  | for hash with 32 bytes
 
--SHA256-> 5.324719ms
+-SHA256-> 9.994746ms  | for hash with 64 bytes
 
--SHA512-> 3.604116ms
+-SHA512-> 4.155731ms  | for hash with 128 bytes
 
--HMAC512-> 3.629344ms
+-HMAC512-> 4.035642ms  | for hash with 88 bytes
 ```
 
 * for 696MB ISO file
 
 ```
-# go run ghas.go -f ~/Desktop/archlinux-2021.02.01-x86_64.iso -s 256
+# ./ghas -f archlinux-2021.02.01-x86_64.iso -s 256 -c
 file length:  729100288
 
--GHAS-> 625.884958ms
+-GHAS-> 693.673692ms  | for hash with 256 bytes
 
--MD5-> 937.482085ms
+-MD5-> 958.255831ms  | for hash with 32 bytes
 
--SHA256-> 1.591005546s
+-SHA256-> 1.645114328s  | for hash with 64 bytes
 
--SHA512-> 1.077741687s
+-SHA512-> 1.155413985s  | for hash with 128 bytes
 
--HMAC512-> 1.079296026s
+-HMAC512-> 1.150461682s  | for hash with 88 bytes
 ```
 
 ---

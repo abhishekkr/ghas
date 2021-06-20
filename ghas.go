@@ -17,12 +17,13 @@ import (
 )
 
 func main() {
+	comparative := flag.Bool("c", false, "prints comparative hash from MD5, SHA256, SHA512, HMAC with time taken")
 	prnToHash := flag.String("p", "hex", "uses 'hex' converter by default for byte to string, can use 'b64' for base64")
 	sizeToHash := flag.Int("s", 64, "size of hash to generate")
 	fileToHash := flag.String("f", "", "path of file to hash")
 	flag.Parse()
 	if *fileToHash != "" {
-		hashTheFile(*fileToHash, *sizeToHash, *prnToHash)
+		hashTheFile(*fileToHash, *sizeToHash, *prnToHash, *comparative)
 	}
 }
 
@@ -32,17 +33,17 @@ func checkFatal(e error) {
 	}
 }
 
-func hashTheFile(filepath string, hashSize int, prnToHash string) {
+func hashTheFile(filepath string, hashSize int, prnToHash string, comparative bool) {
 	dat, err := ioutil.ReadFile(filepath)
 	fmt.Println("file length: ", len(dat))
 	checkFatal(err)
-	fmt.Println("\n-GHAS->")
 	start := time.Now()
 	ghash := GetGhas(dat, hashSize, prnToHash)
-	fmt.Println(time.Since(start))
+	fmt.Println("\n-GHAS->", time.Since(start), " | for hash with", len(ghash), "bytes")
 	fmt.Println(ghash)
-	fmt.Println(len(ghash))
-	otherHashing(dat, prnToHash)
+	if comparative {
+		otherHashing(dat, prnToHash)
+	}
 }
 
 func GetGhas(dat []byte, hashSize int, prnToHash string) string {
@@ -56,34 +57,28 @@ func GetGhas(dat []byte, hashSize int, prnToHash string) string {
 }
 
 func otherHashing(dat []byte, prnToHash string) {
-	fmt.Println("\n-MD5->")
 	mstart := time.Now()
 	mhashB := md5.Sum(dat)
 	mhash := hex.EncodeToString(mhashB[:])
-	fmt.Println(time.Since(mstart))
+	fmt.Println("\n-MD5->", time.Since(mstart), " | for hash with", len(mhash), "bytes")
 	fmt.Println(mhash)
-	fmt.Println(len(mhash))
 
-	fmt.Println("\n-SHA256->")
 	s2start := time.Now()
 	s256B := sha256.Sum256(dat)
 	s256 := hex.EncodeToString(s256B[:])
-	fmt.Println(time.Since(s2start))
+	fmt.Println("\n-SHA256->", time.Since(s2start), " | for hash with", len(s256), "bytes")
 	fmt.Println(s256)
-	fmt.Println(len(s256))
 
-	fmt.Println("\n-SHA512->")
 	s5start := time.Now()
 	s512B := sha512.Sum512(dat)
 	s512 := hex.EncodeToString(s512B[:])
-	fmt.Println(time.Since(s5start))
+	fmt.Println("\n-SHA512->", time.Since(s5start), " | for hash with", len(s512), "bytes")
 	fmt.Println(s512)
-	fmt.Println(len(s512))
 
-	fmt.Println("\n-HMAC512->")
 	hstart := time.Now()
 	hmac512 := hmac.New(sha512.New, []byte("secret"))
 	hmac512.Write(dat)
-	fmt.Printf("hmac512:\t%s\n", base64.StdEncoding.EncodeToString(hmac512.Sum(nil)))
-	fmt.Println(time.Since(hstart))
+	h512 := base64.StdEncoding.EncodeToString(hmac512.Sum(nil))
+	fmt.Println("\n-HMAC512->", time.Since(hstart), " | for hash with", len(h512), "bytes")
+	fmt.Println(h512)
 }

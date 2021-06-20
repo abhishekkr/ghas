@@ -45,14 +45,20 @@ func TestGhasSize(t *testing.T) {
 	}
 }
 
+func TestGhasSum(t *testing.T) {
+	str := "ghas"
+	g := New(8)
+	g.Sum([]byte(str))
+	if g.String() != "636d6774" {
+		t.Errorf("Ghas String getter fails in Eval. %s", g.String())
+	}
+}
+
 func TestGhasEval(t *testing.T) {
 	str := "ghas"
 	g := New(8)
 	g.Eval([]byte(str))
-	if !bytes.Equal(g.data, []byte{103, 105, 99, 112, 116, 113, 119, 112}) {
-		t.Errorf("Ghas has wrong data in Eval. %v", g.data)
-	}
-	if g.String() != "67696370" {
+	if g.String() != "636d6774" {
 		t.Errorf("Ghas String getter fails in Eval. %s", g.String())
 	}
 }
@@ -67,7 +73,7 @@ func TestGhasCustomEval(t *testing.T) {
 		close(g.C)
 	}
 
-	hashByte := func(prevByte byte, currentByte byte, currentIdx int) byte {
+	hashByte := func(salt byte, currentByte byte, currentIdx int) byte {
 		return currentByte
 	}
 	g.CustomEval([]byte(str), sendZero, hashByte)
