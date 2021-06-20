@@ -17,11 +17,12 @@ import (
 )
 
 func main() {
+	prnToHash := flag.String("p", "hex", "uses 'hex' converter by default for byte to string, can use 'b64' for base64")
 	sizeToHash := flag.Int("s", 64, "size of hash to generate")
 	fileToHash := flag.String("f", "", "path of file to hash")
 	flag.Parse()
 	if *fileToHash != "" {
-		hashTheFile(*fileToHash, *sizeToHash)
+		hashTheFile(*fileToHash, *sizeToHash, *prnToHash)
 	}
 }
 
@@ -31,26 +32,30 @@ func checkFatal(e error) {
 	}
 }
 
-func hashTheFile(filepath string, hashSize int) {
+func hashTheFile(filepath string, hashSize int, prnToHash string) {
 	dat, err := ioutil.ReadFile(filepath)
 	fmt.Println("file length: ", len(dat))
 	checkFatal(err)
 	fmt.Println("\n-GHAS->")
 	start := time.Now()
-	ghash := GetGhas(dat, hashSize)
+	ghash := GetGhas(dat, hashSize, prnToHash)
 	fmt.Println(time.Since(start))
 	fmt.Println(ghash)
 	fmt.Println(len(ghash))
-	otherHashing(dat)
+	otherHashing(dat, prnToHash)
 }
 
-func GetGhas(dat []byte, hashSize int) string {
+func GetGhas(dat []byte, hashSize int, prnToHash string) string {
 	g := ghaslib.New(hashSize)
-	g.Eval([]byte(dat))
+	if prnToHash == "b64" {
+		g.PrintableHash = g.GetPrintableB64
+	}
+	//g.Eval([]byte(dat))
+	g.Sum([]byte(dat))
 	return g.String()
 }
 
-func otherHashing(dat []byte) {
+func otherHashing(dat []byte, prnToHash string) {
 	fmt.Println("\n-MD5->")
 	mstart := time.Now()
 	mhashB := md5.Sum(dat)

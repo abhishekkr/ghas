@@ -4,7 +4,7 @@ import "testing"
 
 var (
 	hash64ToDataMap = map[string]string{
-		"303133303431373038313b303c313f30203123302431273028312b302c312f30": "",
+		"000103000401070008010b000c010f00100113001401170018011b001c011f00": "",
 		"616062616560666169606a616d606e61716072617560766179607a617d607e61": "a",
 		"616063626560666169606a616d606e61716072617560766179607a617d607e61": "aaaaa",
 		"476963707471777078717b707c717f70607163706471677068716b706c716f70": "Ghas",
@@ -33,7 +33,7 @@ There are many variations of passages of Lorem Ipsum available, but the majority
 func TestAPI(t *testing.T) {
 	for hash64, data := range hash64ToDataMap {
 		g := New(64)
-		g.Eval([]byte(data))
+		g.Sum([]byte(data))
 		ghasData := g.Data()
 		ghasString := g.String()
 		if len(ghasData) != 64 {
@@ -44,6 +44,58 @@ func TestAPI(t *testing.T) {
 		}
 		if ghasString != hash64 {
 			t.Errorf("Ghas String doesn't match expected hash:\n%v\n%v", ghasString, hash64)
+		}
+	}
+}
+
+func BenchmarkEvalHex(b *testing.B) {
+	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+
+	for i := 1; i < b.N; i++ {
+		g := New(i)
+		g.PrintableHash = g.GetPrintableHex
+		g.Eval(baseData)
+		if len(g.String()) != i {
+			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
+		}
+	}
+}
+
+func BenchmarkEvalB64(b *testing.B) {
+	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+
+	for i := 1; i < b.N; i++ {
+		g := New(i)
+		g.PrintableHash = g.GetPrintableB64
+		g.Eval(baseData)
+		if len(g.String()) != i {
+			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
+		}
+	}
+}
+
+func BenchmarkSumHex(b *testing.B) {
+	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+
+	for i := 1; i < b.N; i++ {
+		g := New(i)
+		g.PrintableHash = g.GetPrintableHex
+		g.Sum(baseData)
+		if len(g.String()) != i {
+			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
+		}
+	}
+}
+
+func BenchmarkSumB64(b *testing.B) {
+	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+
+	for i := 1; i < b.N; i++ {
+		g := New(i)
+		g.PrintableHash = g.GetPrintableB64
+		g.Sum(baseData)
+		if len(g.String()) != i {
+			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
 		}
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"reflect"
 	"strconv"
-	"sync"
 	"testing"
 )
 
@@ -32,7 +31,7 @@ func TestGhasData(t *testing.T) {
 
 func TestGhasString(t *testing.T) {
 	g := &ghas{data: []byte("ghas"), size: 4}
-	g.PrintableHash = g.getPrintableB64
+	g.PrintableHash = g.GetPrintableB64
 	if g.String() != "Z2hh" {
 		t.Errorf("Ghas String getter fails. %s", g.String())
 	}
@@ -61,7 +60,7 @@ func TestGhasEval(t *testing.T) {
 func TestGhasCustomEval(t *testing.T) {
 	str := "ghas"
 	g := New(8)
-	zeroHashIt := func(g *ghas, b []byte) {
+	sendZero := func(g *ghas, b []byte) {
 		for idx, d := range b {
 			g.C <- (d + []byte(strconv.Itoa(idx))[0])
 		}
@@ -71,24 +70,8 @@ func TestGhasCustomEval(t *testing.T) {
 	hashByte := func(prevByte byte, currentByte byte, currentIdx int) byte {
 		return currentByte
 	}
-	g.CustomEval([]byte(str), zeroHashIt, hashByte)
+	g.CustomEval([]byte(str), sendZero, hashByte)
 	if !bytes.Equal(g.data, []byte{151, 153, 147, 166, 166, 166, 166, 166}) {
 		t.Errorf("Ghas has wrong data in CustomEval. %v", g.data)
 	}
-}
-
-func TestHashIt(t *testing.T) {
-	var expectedByte byte = 101
-	g := &ghas{size: 1, C: make(chan byte, 1)}
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		b, ok := <-g.C
-		if !ok || b != expectedByte {
-			t.Errorf("Ghas HashIt doesn't send on channel.")
-		}
-	}()
-	HashIt(g, []byte{expectedByte})
-	wg.Wait()
 }
