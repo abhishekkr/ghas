@@ -17,3 +17,7 @@ timefs-server
 timefs-splitter
 vendor/**
 Gopkg.toml
+out/*
+cpu.out
+ghaslib.test
+todo.log
