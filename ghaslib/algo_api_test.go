@@ -1,18 +1,21 @@
 package ghaslib
 
-import "testing"
+import (
+	"encoding/base64"
+	"testing"
+)
 
 var (
 	hash64ToDataMap = map[string]string{
-		"407f417c407b41784077417440734170406f416c406b41684067416440634160": "",
-		"605e615d605a61596056615560526151604e614d604a61496046614560426141": "a",
-		"64656667605e615d6052615160566155604a6149604e614d6042614160466145": "aaaaa",
-		"436d67744c734d704c7f4d7c4c7b4d784c674d644c634d604c6f4d6c4c6b4d68": "Ghas",
-		"557b7162365f7566723b5e6c707c68746d6d516e5069516a5065516650615162": "Ghas Hash Function",
-		"fcccde9480ad8f9dcec2e18fdfcbc88cdada8593da90c082d68f9c97c187c8db": `Ghas Hash Function is just a play attempt at
+		"gvgvgugugtgtgsgsgrgrgqgqgpgpgogogngngmgmglglgkgkgjgjgigighghgggg": "",
+		"ononomomololokokojojoioiohohogogovovououototososororoqoqopopoooo": "a",
+		"ppppononokokololoioiojojogogohohououovovososototoqoqororooooopop": "aaaaa",
+		"grptjsjsjvjvjujujpjpjojojrjrjqjqjljljkjkjnjnjmjmjhjhjgjgjjjjjiji": "Ghas",
+		"lusodntpsenrsvqtrrkrkqkqkpkpkokoknknkmkmklklkkkkkjkjkikikhkhkgkg": "Ghas Hash Function",
+		"#PTBwHzDPMUzTOOzSSxASAMwRzDBMxOSXMDUUj#4IgUjDj#iW3HgU7KmWiX6Y0Fg": `Ghas Hash Function is just a play attempt at
 	a b c d e f g h i j k l m n o p q r s t u v w x y z
 	data hashing uniformly at that same length for all length of input`,
-		"e6badbe2d6c3d593d3afb0efd9ed75e57d9845f16b9923e12df00483008571bf": `==========================================================
+		"VKSURMRAQHIXSXtVvChYqC8UbY1w0xsLoTaVfErQnUuFmNuFaGiMlR3J3y8O2#nW": `==========================================================
 What is Lorem Ipsum?
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 
@@ -28,6 +31,8 @@ Where can I get some?
 There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
 =================================================================`,
 	}
+
+	keyToBenchmark = "VKSURMRAQHIXSXtVvChYqC8UbY1w0xsLoTaVfErQnUuFmNuFaGiMlR3J3y8O2#nW"
 )
 
 func TestAPI(t *testing.T) {
@@ -48,25 +53,24 @@ func TestAPI(t *testing.T) {
 	}
 }
 
-func BenchmarkEvalHex(b *testing.B) {
-	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+func BenchmarkEval(b *testing.B) {
+	baseData := []byte(hash64ToDataMap[keyToBenchmark])
 
 	for i := 1; i < b.N; i++ {
 		g := New(i)
-		g.PrintableHash = g.GetPrintableHex
 		g.Eval(baseData)
 		if len(g.String()) != i {
-			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
+			b.Errorf("Ghas String getter fails in Eval.\nsize: %d\ndata: %s", i, g.String())
 		}
 	}
 }
 
 func BenchmarkEvalB64(b *testing.B) {
-	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+	baseData := []byte(hash64ToDataMap[keyToBenchmark])
 
 	for i := 1; i < b.N; i++ {
 		g := New(i)
-		g.PrintableHash = g.GetPrintableB64
+		g.PrintableHash = GetPrintableB64
 		g.Eval(baseData)
 		if len(g.String()) != i {
 			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
@@ -74,12 +78,11 @@ func BenchmarkEvalB64(b *testing.B) {
 	}
 }
 
-func BenchmarkSumHex(b *testing.B) {
-	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+func BenchmarkSum(b *testing.B) {
+	baseData := []byte(hash64ToDataMap[keyToBenchmark])
 
 	for i := 1; i < b.N; i++ {
 		g := New(i)
-		g.PrintableHash = g.GetPrintableHex
 		g.Sum(baseData)
 		if len(g.String()) != i {
 			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
@@ -88,14 +91,18 @@ func BenchmarkSumHex(b *testing.B) {
 }
 
 func BenchmarkSumB64(b *testing.B) {
-	baseData := []byte(hash64ToDataMap["6834556c584d5b1d5d213e61576349695f0a65614d0f0775076a2c1b2e1b5d23"])
+	baseData := []byte(hash64ToDataMap[keyToBenchmark])
 
 	for i := 1; i < b.N; i++ {
 		g := New(i)
-		g.PrintableHash = g.GetPrintableB64
+		g.PrintableHash = GetPrintableB64
 		g.Sum(baseData)
 		if len(g.String()) != i {
 			b.Errorf("Ghas String getter fails in Eval. %s", g.String())
 		}
 	}
+}
+
+func GetPrintableB64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)[:len(data)]
 }

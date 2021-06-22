@@ -16,14 +16,19 @@ import (
 	"encoding/hex"
 )
 
+var (
+	infoLog bool
+)
+
 func main() {
+	verbose := flag.Bool("v", false, "prints detailed output")
 	comparative := flag.Bool("c", false, "prints comparative hash from MD5, SHA256, SHA512, HMAC with time taken")
-	prnToHash := flag.String("p", "hex", "uses 'hex' converter by default for byte to string, can use 'b64' for base64")
 	sizeToHash := flag.Int("s", 64, "size of hash to generate")
 	fileToHash := flag.String("f", "", "path of file to hash")
 	flag.Parse()
+	infoLog = *verbose || *comparative
 	if *fileToHash != "" {
-		hashTheFile(*fileToHash, *sizeToHash, *prnToHash, *comparative)
+		hashTheFile(*fileToHash, *sizeToHash, *comparative)
 	}
 }
 
@@ -33,30 +38,32 @@ func checkFatal(e error) {
 	}
 }
 
-func hashTheFile(filepath string, hashSize int, prnToHash string, comparative bool) {
-	dat, err := ioutil.ReadFile(filepath)
-	fmt.Println("file length: ", len(dat))
-	checkFatal(err)
-	start := time.Now()
-	ghash := GetGhas(dat, hashSize, prnToHash)
-	fmt.Println("\n-GHAS->", time.Since(start), " | for hash with", len(ghash), "bytes")
-	fmt.Println(ghash)
-	if comparative {
-		otherHashing(dat, prnToHash)
+func info(msg ...interface{}) {
+	if infoLog {
+		fmt.Println(msg...)
 	}
 }
 
-func GetGhas(dat []byte, hashSize int, prnToHash string) string {
-	g := ghaslib.New(hashSize)
-	if prnToHash == "b64" {
-		g.PrintableHash = g.GetPrintableB64
+func hashTheFile(filepath string, hashSize int, comparative bool) {
+	dat, err := ioutil.ReadFile(filepath)
+	info("file length: ", len(dat), "Bytes |", len(dat)/1024, "KBs")
+	checkFatal(err)
+	start := time.Now()
+	ghash := GetGhas(dat, hashSize)
+	info("\n-GHAS->", time.Since(start), " | for hash with", len(ghash), "bytes")
+	fmt.Println(ghash)
+	if comparative {
+		otherHashing(dat)
 	}
-	//g.Eval([]byte(dat))
+}
+
+func GetGhas(dat []byte, hashSize int) string {
+	g := ghaslib.New(hashSize)
 	g.Sum([]byte(dat))
 	return g.String()
 }
 
-func otherHashing(dat []byte, prnToHash string) {
+func otherHashing(dat []byte) {
 	mstart := time.Now()
 	mhashB := md5.Sum(dat)
 	mhash := hex.EncodeToString(mhashB[:])

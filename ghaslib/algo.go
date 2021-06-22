@@ -1,26 +1,24 @@
 package ghaslib
 
-import (
-	"encoding/base64"
-	"encoding/hex"
-)
-
 /*
 No DRY applied on CustomEval & Sum; as extracting common flow here is considerably increasing exec time.
 Since that is for easy maintainability and not attributing to quality of hash generated, we'll do without it.
 */
 
+const chartable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:#%"
+const shiftForChartable = 2 // allowing ranges (0-63) for byte<>uint8(0-255)
+
 type ghas struct {
 	data          []byte
 	size          int
 	C             chan byte
-	PrintableHash func() string
+	PrintableHash func([]byte) string
 }
 
 func New(size int) *ghas {
 	c := make(chan byte, 1)
 	g := &ghas{size: size, C: c}
-	g.PrintableHash = g.GetPrintableHex
+	g.PrintableHash = GetPrintableHash
 	return g
 }
 
@@ -29,7 +27,7 @@ func (g *ghas) Data() []byte {
 }
 
 func (g *ghas) String() string {
-	return g.PrintableHash()
+	return g.PrintableHash(g.data)
 }
 
 func (g *ghas) Size() int {
@@ -38,7 +36,7 @@ func (g *ghas) Size() int {
 
 func (g *ghas) Sum(dat []byte) {
 	g.data = make([]byte, g.size)
-	var defVal byte = byte(len(dat))
+	var defVal byte = byte(len(dat)) // ensuring substring like content differs in hashes
 	for i := 0; i < g.size; i++ {
 		g.data[i] = defVal
 	}
@@ -51,7 +49,7 @@ func (g *ghas) Sum(dat []byte) {
 		g.data[idx] = hashByte(g.data[idx], d, idx)
 		idx++
 	}
-	prev := g.data[0]
+	prev := defVal
 	if idx > 0 && idx < g.size {
 		prev = g.data[idx-1]
 	}
@@ -100,11 +98,12 @@ func (g *ghas) CustomEval(dat []byte,
 	}
 }
 
-func (g *ghas) GetPrintableHex() string {
-	return hex.EncodeToString(g.Data())[:g.size]
-}
-func (g *ghas) GetPrintableB64() string {
-	return base64.StdEncoding.EncodeToString(g.Data())[:g.size]
+func GetPrintableHash(data []byte) string {
+	hashChar := make([]byte, len(data))
+	for idx, v := range data {
+		hashChar[idx] = chartable[v>>shiftForChartable]
+	}
+	return string(hashChar)
 }
 
 func sendData(g *ghas, dat []byte) {

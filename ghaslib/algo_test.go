@@ -2,6 +2,7 @@ package ghaslib
 
 import (
 	"bytes"
+	"encoding/base64"
 	"reflect"
 	"strconv"
 	"testing"
@@ -31,7 +32,9 @@ func TestGhasData(t *testing.T) {
 
 func TestGhasString(t *testing.T) {
 	g := &ghas{data: []byte("ghas"), size: 4}
-	g.PrintableHash = g.GetPrintableB64
+	g.PrintableHash = func(data []byte) string {
+		return base64.StdEncoding.EncodeToString(data)[:g.size]
+	}
 	if g.String() != "Z2hh" {
 		t.Errorf("Ghas String getter fails. %s", g.String())
 	}
@@ -49,7 +52,7 @@ func TestGhasSum(t *testing.T) {
 	str := "ghas"
 	g := New(8)
 	g.Sum([]byte(str))
-	if g.String() != "636d6774" {
+	if g.String() != "orpttsts" {
 		t.Errorf("Ghas String getter fails in Eval. %s", g.String())
 	}
 }
@@ -58,7 +61,7 @@ func TestGhasEval(t *testing.T) {
 	str := "ghas"
 	g := New(8)
 	g.Eval([]byte(str))
-	if g.String() != "636d6774" {
+	if g.String() != "orpttsts" {
 		t.Errorf("Ghas String getter fails in Eval. %s", g.String())
 	}
 }

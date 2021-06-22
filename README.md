@@ -9,13 +9,12 @@
 
 ```
 Usage of ghas:
-  -c    prints comparative hash from MD5, SHA256, SHA512, HMAC with time taken
+  -v    verbose mode, to enable file length & time taken info for GHAS
+  -c    prints comparative hash from MD5, SHA256, SHA512, HMAC with time taken (enables verbose by default)
   -f string
         path of file to hash
   -s int
         size of hash to generate (default 64)
-  -p string
-        uses 'hex' converter by default for byte to string, can use 'b64' for base64 (default "hex")
 ```
 
 > example: `go run ghas.go -f ./LICENSE -s 256 -c` will show time taken and hash calculated by this `Ghas` alongwith comparative calculation by Golang libs for `md5`, `sha256`, `sha512`, `hmac`

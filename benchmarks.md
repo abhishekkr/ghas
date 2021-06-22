@@ -56,32 +56,32 @@ Showing top 5 nodes out of 107
 # ./ghas -f go.mod -s 256
 file length:  43
 
--GHAS-> 4.701µs  | for hash with 256 bytes
+-GHAS-> 4.044µs  | for hash with 256 bytes
 
--MD5-> 613ns  | for hash with 32 bytes
+-MD5-> 836ns  | for hash with 32 bytes
 
--SHA256-> 1.539µs  | for hash with 64 bytes
+-SHA256-> 1.77µs  | for hash with 64 bytes
 
--SHA512-> 1.263µs  | for hash with 128 bytes
+-SHA512-> 1.315µs  | for hash with 128 bytes
 
--HMAC512-> 2.841µs  | for hash with 88 bytes
+-HMAC512-> 3.28µs  | for hash with 88 bytes
 ```
 
-* for a 24KB pprof dump
+* for a 20KB `cpu.out` dump
 
 ```
 # ./ghas -f cpu.out -s 256
-file length:  24876
+file length:  20178
 
--GHAS-> 32.436µs  | for hash with 256 bytes
+-GHAS-> 25.557µs  | for hash with 256 bytes
 
--MD5-> 35.367µs  | for hash with 32 bytes
+-MD5-> 31.673µs  | for hash with 32 bytes
 
--SHA256-> 62.415µs  | for hash with 64 bytes
+-SHA256-> 56.55µs  | for hash with 64 bytes
 
--SHA512-> 42.845µs  | for hash with 128 bytes
+-SHA512-> 39.427µs  | for hash with 128 bytes
 
--HMAC512-> 43.933µs  | for hash with 88 bytes
+-HMAC512-> 40.123µs  | for hash with 88 bytes
 ```
 
 
@@ -91,15 +91,15 @@ file length:  24876
 # ./ghas -f 1706.pdf -s 256 -c
 file length:  2128686
 
--GHAS-> 3.241141ms  | for hash with 256 bytes
+-GHAS-> 2.411464ms  | for hash with 256 bytes
 
--MD5-> 3.996002ms  | for hash with 32 bytes
+-MD5-> 3.247847ms  | for hash with 32 bytes
 
--SHA256-> 9.994746ms  | for hash with 64 bytes
+-SHA256-> 5.76674ms  | for hash with 64 bytes
 
--SHA512-> 4.155731ms  | for hash with 128 bytes
+-SHA512-> 4.429595ms  | for hash with 128 bytes
 
--HMAC512-> 4.035642ms  | for hash with 88 bytes
+-HMAC512-> 4.027916ms  | for hash with 88 bytes
 ```
 
 * for 696MB ISO file
@@ -108,15 +108,15 @@ file length:  2128686
 # ./ghas -f archlinux-2021.02.01-x86_64.iso -s 256 -c
 file length:  729100288
 
--GHAS-> 693.673692ms  | for hash with 256 bytes
+-GHAS-> 730.098234ms  | for hash with 256 bytes
 
--MD5-> 958.255831ms  | for hash with 32 bytes
+-MD5-> 977.162613ms  | for hash with 32 bytes
 
--SHA256-> 1.645114328s  | for hash with 64 bytes
+-SHA256-> 1.660822319s  | for hash with 64 bytes
 
--SHA512-> 1.155413985s  | for hash with 128 bytes
+-SHA512-> 1.134428145s  | for hash with 128 bytes
 
--HMAC512-> 1.150461682s  | for hash with 88 bytes
+-HMAC512-> 1.126056971s  | for hash with 88 bytes
 ```
 
 ---
