@@ -3,6 +3,8 @@
 
 > an attempt at creating a usable Hashing Algorithm
 
+* binary downloads shall be available for quick usage at [Latest Release](https://github.com/abhishekkr/ghas/releases/latest)
+
 ---
 
 * running sample main `go run ghas.go -f $FILE_PATH -s $HASH_SIZE`
