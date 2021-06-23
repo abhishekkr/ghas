@@ -81,7 +81,7 @@ func (g *ghas) CustomEval(dat []byte,
 			idx = 0
 		}
 		res, ok := <-g.C
-		if ok == false {
+		if !ok {
 			break
 		}
 		g.data[idx] = hashFn(g.data[idx], res, idx)

@@ -1,9 +1,13 @@
 
 ## Ghas
 
-> an attempt at creating a usable Hashing Algorithm
+> an attempt at creating a usable Hashing Algorithm for non-cryptographic use-cases
+>
+> **Ghaslib is an EXPERIMENTAL Package as of yet, just for play projects.**
 
 * binary downloads shall be available for quick usage at [Latest Release](https://github.com/abhishekkr/ghas/releases/latest)
+
+![Experimental Gopher](ghas-experimental.png)
 
 ---
 

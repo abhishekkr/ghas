@@ -27,23 +27,31 @@ ok  	github.com/abhishekkr/ghas/ghaslib	0.001s	coverage: 97.8% of statements
 goos: linux
 goarch: amd64
 pkg: github.com/abhishekkr/ghas/ghaslib
-BenchmarkEvalHex-8   	    2742	    399056 ns/op
-BenchmarkEvalB64-8   	    3028	    392148 ns/op
-BenchmarkSumHex-8    	   77977	    121189 ns/op
-BenchmarkSumB64-8    	   84766	    117913 ns/op
+BenchmarkEval-8      	    1730	    596685 ns/op
+BenchmarkEvalB64-8   	    1987	    586590 ns/op
+BenchmarkSum-8       	   47719	    106051 ns/op
+BenchmarkSumB64-8    	   48456	    118709 ns/op
 PASS
-ok  	github.com/abhishekkr/ghas/ghaslib	22.280s
+ok  	github.com/abhishekkr/ghas/ghaslib	13.756s
+~/ABK/dev/abhishekkr/on_github/ghas
 
+
+try pprof commands like 'top10'
 File: ghaslib.test
 Type: cpu
-...
-Showing top 5 nodes out of 107
+Time: Jun 23, 2021 at 3:35pm (IST)
+Duration: 13.75s, Total samples = 15.87s (115.43%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top5
+Showing nodes accounting for 10770ms, 67.86% of 15870ms total
+Dropped 144 nodes (cum <= 79.35ms)
+Showing top 5 nodes out of 106
       flat  flat%   sum%        cum   cum%
-    9650ms 33.98% 33.98%    10560ms 37.18%  github.com/abhishekkr/ghas/ghaslib.(*ghas).Sum
-    3390ms 11.94% 45.92%     3440ms 12.11%  encoding/hex.Encode
-    3330ms 11.73% 57.64%     3330ms 11.73%  encoding/base64.(*Encoding).Encode
-    1720ms  6.06% 63.70%     2710ms  9.54%  runtime.scanobject
-     750ms  2.64% 66.34%      750ms  2.64%  runtime.memclrNoHeapPointers
+    6640ms 41.84% 41.84%     7690ms 48.46%  github.com/abhishekkr/ghas/ghaslib.(*ghas).Sum
+    1770ms 11.15% 52.99%     1770ms 11.15%  encoding/base64.(*Encoding).Encode
+     990ms  6.24% 59.23%     1410ms  8.88%  github.com/abhishekkr/ghas/ghaslib.GetPrintableHash
+     760ms  4.79% 64.02%      760ms  4.79%  github.com/abhishekkr/ghas/ghaslib.hashByte
+     610ms  3.84% 67.86%      880ms  5.55%  runtime.scanobject
 ```
 
 ---
